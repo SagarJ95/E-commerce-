@@ -1,4 +1,8 @@
 const router = require("express").Router();
+const controller = require("../controller/user_controller");
+
+//REGISTER ROUTE
+router.post("/register", controller.user_register);
 
 //login page
 router.get("/", (req, res) => {
