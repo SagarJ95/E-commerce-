@@ -2,7 +2,7 @@ const pool = require("../db/db");
 const jwtGenerate = require("../utilites/jwt");
 const bcryptjs = require("bcryptjs");
 
-module.exports.user_register = async (req, res) => {
+module.export.user_register = async (req, res) => {
   try {
     let { firstname, lastname, email, phone, password } = req.body;
     const emailId = await pool.query("select * from register where email=$1", [
