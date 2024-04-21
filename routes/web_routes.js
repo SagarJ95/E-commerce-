@@ -5,9 +5,10 @@ const controller = require("../controller/user_controller");
 router.post("/register", controller.user_register);
 
 //login page
-router.get("/", (req, res) => {
+router.get("/login", (req, res) => {
   res.render("login");
 });
+router.post('/login',controller.user_login);
 
 //about page
 router.get("/about", (req, res) => {
