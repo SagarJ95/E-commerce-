@@ -5,6 +5,7 @@ const path = require("path");
 const cors = require("cors");
 const webRoutes = require("./routes/web_routes");
 
+app.use(express.json())
 app.use(express.static(__dirname + "/public"));
 app.use(cors());
 // view engine setup
