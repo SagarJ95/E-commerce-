@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const controller = require("../controller/user_controller");
 const passwordController = require('../controller/password_controller');
+const product = require('../controller/product')
 
 //REGISTER ROUTE
 router.post("/register", controller.user_register);
@@ -47,5 +48,8 @@ router.post("/forget-password", passwordController.forget_password);
 
 //Reset password
 router.post("/reset-password", passwordController.reset_password);
+
+//product list
+router.get('/productlist', product.product_list)
 
 module.exports = router;
