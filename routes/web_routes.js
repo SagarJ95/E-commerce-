@@ -54,6 +54,9 @@ router.post("/forget-password", passwordController.forget_password);
 router.post("/reset-password", passwordController.reset_password);
 
 //product list
-router.get('/productlist', product.product_list)
+router.get('/productlist', product.product_list);
+
+//contact us
+router.post('/contactus', controller.contact_us);
 
 module.exports = router;

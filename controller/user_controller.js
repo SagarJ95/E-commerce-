@@ -71,4 +71,33 @@ module.exports.user_login = async (req, res) => {
   }
 
 
+
+
+}
+
+module.exports.contact_us = async (req, res) => {
+  try {
+    const { first_name, last_name, message, email } = req.body;
+
+    if (first_name == '' || last_name == '' || email == '') {
+      return res.status(401).json({ msg: "Please fill all the fields" });
+    } else {
+
+      const storedb = await pool.query("Insert into _contact_us(first_name,last_name,contact_email,contact_desc) values ($1,$2,$3,$4)", [
+        first_name,
+        last_name,
+        email,
+        message
+      ]);
+
+      if (storedb.rowCount = 1) {
+        return res.status(200).json({ msg: "Store Successfully" })
+      } else {
+        return res.status(500).json({ msg: "Something went to wrong" })
+      }
+
+    }
+  } catch (err) {
+    return res.status(400).json({ error: err.message })
+  }
 }
