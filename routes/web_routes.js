@@ -12,6 +12,10 @@ router.get("/login", (req, res) => {
 });
 router.post('/login', controller.user_login);
 
+//home
+router.get('/', (req, res) => {
+  res.render('index')
+})
 //about page
 router.get("/about", (req, res) => {
   res.render("about");
