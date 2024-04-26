@@ -1,8 +1,8 @@
 const router = require("express").Router();
 const controller = require("../controller/user_controller");
-const passwordController = require('../controller/password_controller');
-const product = require('../controller/product')
-
+const passwordController = require("../controller/password_controller");
+const product = require("../controller/product");
+const authorize = require("../middleware/authorization");
 //REGISTER ROUTE
 router.post("/register", controller.user_register);
 
@@ -10,12 +10,12 @@ router.post("/register", controller.user_register);
 router.get("/login", (req, res) => {
   res.render("login");
 });
-router.post('/login', controller.user_login);
+router.post("/login", controller.user_login);
 
 //home
-router.get('/', (req, res) => {
-  res.render('index')
-})
+router.get("/", (req, res) => {
+  res.render("index");
+});
 //about page
 router.get("/about", (req, res) => {
   res.render("about");
@@ -46,7 +46,6 @@ router.get("/shop", (req, res) => {
   res.render("shop");
 });
 
-
 //forget password
 router.post("/forget-password", passwordController.forget_password);
 
@@ -54,9 +53,12 @@ router.post("/forget-password", passwordController.forget_password);
 router.post("/reset-password", passwordController.reset_password);
 
 //product list
-router.get('/productlist', product.product_list);
+router.get("/productlist", product.product_list);
 
 //contact us
-router.post('/contactus', controller.contact_us);
+router.post("/contactus", controller.contact_us);
+
+//cart
+router.post("/addtoCart", authorize, product.cart);
 
 module.exports = router;
