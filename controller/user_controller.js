@@ -9,7 +9,7 @@ module.exports.user_register = async (req, res) => {
     const emailId = await pool.query("select * from _customers where customer_email=$1", [
       email,
     ]);
-    console.log("count", emailId.rows)
+
     if (emailId.rows.length != 0) {
       res.status(409).json({ message: "Email already exists" });
     } else {
@@ -23,7 +23,7 @@ module.exports.user_register = async (req, res) => {
             [name, email, contact, hashedPassword, country, city, address]
           );
 
-          console.log("users>", users);
+
           const jwttoken = jwtGenerate(users.rows[0].user_id);
 
           res.status(200).json({
@@ -52,8 +52,9 @@ module.exports.user_login = async (req, res) => {
       bcryptjs.compare(password, checkemailId.rows[0].customer_pass, async (err, validPassword) => {
         if (err) {
           res.status(401).json({ error: "Sorry! Email or password is incorrect" })
+
         } else if (validPassword) {
-          const jwttoken = jwtGenerate(checkemailId.rows[0].user_id);
+          const jwttoken = jwtGenerate(checkemailId.rows[0].customer_id);
 
           res.status(200).json({
             message: "User login successfully",

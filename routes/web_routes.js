@@ -2,7 +2,7 @@ const router = require("express").Router();
 const controller = require("../controller/user_controller");
 const passwordController = require("../controller/password_controller");
 const product = require("../controller/product");
-const authorize = require("../middleware/authorization");
+const authorize = require("../middleware/token_auth");
 //REGISTER ROUTE
 router.post("/register", controller.user_register);
 
@@ -59,6 +59,8 @@ router.get("/productlist", product.product_list);
 router.post("/contactus", controller.contact_us);
 
 //cart
-router.post("/addtoCart", authorize, product.cart);
+router.post("/addtoCart", authorize, product.addcart);
+router.post("/updatetoCart", authorize, product.updatecart);
+router.post("/deletetoCart", authorize, product.deletecart);
 
 module.exports = router;

@@ -3,8 +3,9 @@ require("dotenv").config();
 
 module.exports = async (req, res, next) => {
   try {
+
     // Get token from header
-    const token = req.header("header");
+    const token = req.header("Authorization");
 
     if (!token) {
       return res.status(201).json({ error: "No Token Provided" });
@@ -12,7 +13,7 @@ module.exports = async (req, res, next) => {
       const payload = jwt.verify(token, process.env.secret);
 
       if (payload) {
-        req.user = payload.user;
+        req.user_id = payload.user;
       } else {
         return res.status(403).json({ error: "unauthoried access" });
       }
