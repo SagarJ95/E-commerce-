@@ -1,3 +1,5 @@
+const { errors } = require("puppeteer");
+const pool = require("../db/db");
 const pooldb = require("../db/db");
 const authorize = require("../middleware/token_auth");
 
@@ -85,3 +87,59 @@ module.exports.deletecart = async (req, res) => {
     return res.status(500).json({ error: err.message })
   }
 };
+
+
+module.exports.coupons = async (req, res) => {
+  try {
+    const { product_id, coupons_code } = req.body;
+
+    //check couponse_code available for this product_id
+    const checkCouponsCode = await pooldb.query("select * from apply_coupons where product_id = $1 and coupons_code = $2", [
+      product_id,
+      coupons_code
+    ])
+
+
+    if (checkCouponsCode.rowCount == 0) {
+      return res.status(400).json({
+        error: "Sorry ! Coupons not for this product"
+      })
+    } else {
+      const limitapply = await pooldb.query("select * from _coupons where product_id =$1 and customer_id = $2", [
+        product_id,
+        req.user_id
+      ]);
+
+      const couponslimit = await pooldb.query("select * from apply_coupons where product_id =$1", [
+        product_id
+      ]);
+
+      let limitP = (limitapply.rowCount != 0) ? limitapply.rowCount : 0
+
+      //coupons limit check
+      if (limitP == couponslimit.rows[0].coupons_limit) {
+        return res.status(201).json({ error: "coupons limit exceeds" });
+      } else {
+
+        let limitUsed = limitP + 1;
+
+        const insertCoupons = await pooldb.query("Insert Into _coupons(product_id,coupon_title,coupon_price,coupon_code,coupon_used,customer_id) Values ($1,$2,$3,$4,$5,$6)", [
+          product_id,
+          couponslimit.rows[0].coupons_name,
+          couponslimit.rows[0].discount,
+          couponslimit.rows[0].coupons_code,
+          limitUsed,
+          req.user_id
+        ])
+
+        if (insertCoupons.rowCount == 1) {
+          return res.status(200).json({ message: "data add successfully" })
+        } else {
+          return res.status(201).json({ message: "data add Unsuccessfully" })
+        }
+      }
+    }
+  } catch (err) {
+    return res.status(500).json({ error: err.message })
+  }
+}

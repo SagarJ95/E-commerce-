@@ -63,4 +63,7 @@ router.post("/addtoCart", authorize, product.addcart);
 router.post("/updatetoCart", authorize, product.updatecart);
 router.post("/deletetoCart", authorize, product.deletecart);
 
+//apply coupons 
+router.post('/coupons', authorize, product.coupons)
+
 module.exports = router;
