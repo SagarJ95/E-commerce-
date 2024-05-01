@@ -3,6 +3,7 @@ const passwordController = require("../controller/password_controller");
 const product = require("../controller/product");
 const authorize = require("../middleware/token_auth");
 const controller = require("../controller/user_controller");
+const Orders = require('../controller/order')
 
 //REGISTER ROUTE
 router.post("/register", controller.user_register);
@@ -29,5 +30,8 @@ router.post("/deletetoCart", authorize, product.deletecart);
 
 //apply coupons 
 router.post('/coupons', authorize, product.coupons)
+
+//Place Order
+router.post('/Order', authorize, Orders.place_order)
 
 module.exports = router;

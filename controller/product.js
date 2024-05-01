@@ -24,11 +24,12 @@ module.exports.addcart = async (req, res) => {
 
     const { product_id, product_price, qty } = req.body;
 
-    const addtocart = await pooldb.query("Insert into _cart(p_id,ip_add,qty,p_price) VALUES ($1,$2,$3,$4)", [
+    const addtocart = await pooldb.query("Insert into _cart(p_id,ip_add,qty,p_price,customer_id) VALUES ($1,$2,$3,$4,$5)", [
       product_id,
       req.user_id,
       qty,
-      product_price
+      product_price,
+      res.user_id
     ])
 
 
