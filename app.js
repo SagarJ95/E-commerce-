@@ -4,6 +4,7 @@ const PORT = process.env.PORT || 3000;
 const path = require("path");
 const cors = require("cors");
 const webRoutes = require("./routes/web_routes");
+const apiRoutes = require("./routes/api");
 
 app.use(express.json())
 app.use(express.static(__dirname + "/public"));
@@ -14,6 +15,7 @@ app.set("view engine", "ejs");
 
 //web_routes
 app.use("/", webRoutes);
+app.use("/api", apiRoutes);
 
 app.listen(PORT, () => {
   console.log("connnect");
