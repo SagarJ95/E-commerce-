@@ -3,7 +3,8 @@ const controller = require("../controller/user_controller");
 const passwordController = require("../controller/password_controller");
 const product = require("../controller/product");
 const authorize = require("../middleware/token_auth");
-const axios = require('axios')
+const axios = require('axios');
+const { errors } = require("puppeteer");
 
 //login page
 router.get("/login", (req, res) => {
@@ -11,17 +12,33 @@ router.get("/login", (req, res) => {
 });
 
 //home
-router.get("/", (req, res) => {
-  res.render('index')
+router.get("/", async (req, res) => {
+  try {
+    const productlist = await axios.get('http://localhost:3000/api/productlist')
+    res.render('index', { productlist: productlist.data.product_list })
+  } catch (err) {
+    if (error.response) {
+      console.log(error)
+    }
+  }
 });
+
+
 //about page
 router.get("/about", (req, res) => {
   res.render("about");
 });
 
 //service page
-router.get("/services", (req, res) => {
-  res.render("services");
+router.get("/services", async (req, res) => {
+  try {
+    const productlist = await axios.get('http://localhost:3000/api/productlist')
+    res.render('services', { productlist: productlist.data.product_list })
+  } catch (err) {
+    if (error.response) {
+      console.log(error)
+    }
+  }
 });
 
 // blog page
@@ -45,7 +62,7 @@ router.get("/shop", async (req, res) => {
     const getproductlist = await axios.get('http://localhost:3000/api/productlist');
 
     res.render('shop', { productlist: getproductlist.data.product_list })
-  } catch (err) {
+  } catch (error) {
     if (error.response) {
       console.log(error)
     }
