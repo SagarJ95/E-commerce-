@@ -3,7 +3,7 @@ const controller = require("../controller/user_controller");
 const passwordController = require("../controller/password_controller");
 const product = require("../controller/product");
 const authorize = require("../middleware/token_auth");
-
+const axios = require('axios')
 
 //login page
 router.get("/login", (req, res) => {
@@ -12,7 +12,7 @@ router.get("/login", (req, res) => {
 
 //home
 router.get("/", (req, res) => {
-  res.render("index");
+  res.render('index')
 });
 //about page
 router.get("/about", (req, res) => {
@@ -40,8 +40,16 @@ router.get("/cart", (req, res) => {
 });
 
 //shop page
-router.get("/shop", (req, res) => {
-  res.render("shop");
+router.get("/shop", async (req, res) => {
+  try {
+    const getproductlist = await axios.get('http://localhost:3000/api/productlist');
+
+    res.render('shop', { productlist: getproductlist.data.product_list })
+  } catch (err) {
+    if (error.response) {
+      console.log(error)
+    }
+  }
 });
 
 
