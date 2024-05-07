@@ -58,4 +58,7 @@ router.post(
   product.csv_import
 );
 
+//send mail (GMAIL)
+router.post('/sendmail', controller.sendEmail)
+
 module.exports = router;

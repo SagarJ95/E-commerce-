@@ -1,6 +1,7 @@
 const pool = require("../db/db");
 const jwtGenerate = require("../utilites/jwt");
 const bcryptjs = require("bcryptjs");
+const nodemailer = require('nodemailer')
 
 module.exports.user_register = async (req, res) => {
   try {
@@ -100,5 +101,40 @@ module.exports.contact_us = async (req, res) => {
     }
   } catch (err) {
     return res.status(400).json({ error: err.message })
+  }
+}
+
+module.exports.sendEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(201).json({ msg: "Please Enter Email" });
+    } else {
+      const transport = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: "",
+          pass: ""
+        }
+      })
+
+      const mailerOption = {
+        from: "",
+        to: "",
+        subject: "",
+        text: ""
+      }
+
+      transport.sendMail(mailerOption, function (error, info) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      })
+    }
+  } catch {
+    return res.status(500).json({ error: err.message })
   }
 }
