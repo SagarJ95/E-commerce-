@@ -1,20 +1,20 @@
 const pool = require("../db/db");
 const jwtGenerate = require("../utilites/jwt");
 const bcryptjs = require("bcryptjs");
-const nodemailer = require('nodemailer')
+const nodemailer = require("nodemailer");
 
 module.exports.user_register = async (req, res) => {
   try {
     let { name, email, contact, password, country, city, address } = req.body;
 
-    const emailId = await pool.query("select * from _customers where customer_email=$1", [
-      email,
-    ]);
+    const emailId = await pool.query(
+      "select * from _customers where customer_email=$1",
+      [email]
+    );
 
     if (emailId.rows.length != 0) {
       res.status(409).json({ message: "Email already exists" });
     } else {
-
       bcryptjs.hash(password, 10, async (err, hashedPassword) => {
         if (err) {
           res.status(500).json({ err: "Internal Server Error" });
@@ -23,7 +23,6 @@ module.exports.user_register = async (req, res) => {
             "INSERT INTO _customers(customer_name, customer_email, customer_contact, customer_pass, customer_country, customer_city, customer_address) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
             [name, email, contact, hashedPassword, country, city, address]
           );
-
 
           const jwttoken = jwtGenerate(users.rows[0].user_id);
 
@@ -43,98 +42,97 @@ module.exports.user_login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const checkemailId = await pool.query("select * from _customers where customer_email=$1", [
-      email
-    ]);
+    const checkemailId = await pool.query(
+      "select * from _customers where customer_email=$1",
+      [email]
+    );
 
     if (checkemailId.rows.length == 0) {
-      res.status(404).json({ msg: "Sorry! user doesn't exits. please create new account" })
+      res
+        .status(404)
+        .json({ msg: "Sorry! user doesn't exits. please create new account" });
     } else {
-      bcryptjs.compare(password, checkemailId.rows[0].customer_pass, async (err, validPassword) => {
-        if (err) {
-          res.status(401).json({ error: "Sorry! Email or password is incorrect" })
+      bcryptjs.compare(
+        password,
+        checkemailId.rows[0].customer_pass,
+        async (err, validPassword) => {
+          if (err) {
+            res
+              .status(401)
+              .json({ error: "Sorry! Email or password is incorrect" });
+          } else if (validPassword) {
+            const jwttoken = jwtGenerate(checkemailId.rows[0].customer_id);
 
-        } else if (validPassword) {
-          const jwttoken = jwtGenerate(checkemailId.rows[0].customer_id);
-
-          res.status(200).json({
-            message: "User login successfully",
-            jwttoken,
-          });
-        } else {
-          res.status(500).json({
-            error: "Sorry! Email or password is incorrect",
-          })
+            res.status(200).json({
+              message: "User login successfully",
+              jwttoken,
+            });
+          } else {
+            res.status(500).json({
+              error: "Sorry! Email or password is incorrect",
+            });
+          }
         }
-      })
+      );
     }
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    res.status(500).json({ error: err.message });
   }
-
-
-
-
-}
+};
 
 module.exports.contact_us = async (req, res) => {
   try {
     const { first_name, last_name, message, email } = req.body;
 
-    if (first_name == '' || last_name == '' || email == '') {
+    if (first_name == "" || last_name == "" || email == "") {
       return res.status(401).json({ msg: "Please fill all the fields" });
     } else {
+      const storedb = await pool.query(
+        "Insert into _contact_us(first_name,last_name,contact_email,contact_desc) values ($1,$2,$3,$4)",
+        [first_name, last_name, email, message]
+      );
 
-      const storedb = await pool.query("Insert into _contact_us(first_name,last_name,contact_email,contact_desc) values ($1,$2,$3,$4)", [
-        first_name,
-        last_name,
-        email,
-        message
-      ]);
-
-      if (storedb.rowCount = 1) {
-        return res.status(200).json({ msg: "Store Successfully" })
+      if ((storedb.rowCount = 1)) {
+        return res.status(200).json({ msg: "Store Successfully" });
       } else {
-        return res.status(500).json({ msg: "Something went to wrong" })
+        return res.status(500).json({ msg: "Something went to wrong" });
       }
-
     }
   } catch (err) {
-    return res.status(400).json({ error: err.message })
+    return res.status(400).json({ error: err.message });
   }
-}
+};
 
-module.exports.sendEmail = async (req, res) => {
+module.exports.sendEmail = (req, res) => {
   try {
     const { email } = req.body;
-
     if (!email) {
       return res.status(201).json({ msg: "Please Enter Email" });
     } else {
       const transport = nodemailer.createTransport({
-        service: 'gmail',
+        service: "gmail",
         auth: {
-          user: "",
-          pass: ""
-        }
-      })
+          user: "info@oneroof.tech",
+          pass: "WeAre1rooftech*",
+        },
+      });
 
       const mailerOption = {
-        from: "",
-        to: "",
-        subject: "",
-        text: ""
-      }
+        from: "info@oneroof.tech",
+        to: "sagarjagade2023@gmail.com",
+        subject: "testing",
+        text: "testing",
+      };
 
-      transport.sendMail(mailerOption, function (error, info) {
+      transport.sendMail(mailerOption, function (err, info) {
         if (err) {
-          console.log(err)
+          console.log(err);
         } else {
-          console.log('Email sent: ' + info.response);
+          console.log("Email sent: " + info.response);
         }
-      })
+      });
     }
   } catch {
-    return res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: err.message });
   }
-}
+};

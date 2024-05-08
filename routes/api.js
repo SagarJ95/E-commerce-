@@ -59,6 +59,6 @@ router.post(
 );
 
 //send mail (GMAIL)
-router.post('/sendmail', controller.sendEmail)
+// router.get("/SendMail", controller.sendEmail);
 
 module.exports = router;
