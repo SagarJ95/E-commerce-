@@ -3,6 +3,8 @@ const jwtGenerate = require("../utilites/jwt");
 const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const { validationResult } = require("express-validator");
+const send_email_error = require('../validation/send_email_error')
+
 
 module.exports.user_register = async (req, res) => {
   try {
@@ -107,7 +109,22 @@ module.exports.contact_us = async (req, res) => {
 module.exports.sendEmail = (req, res) => {
   try {
     const { email } = req.body;
-    console.log("reqqqq", req.body);
+
+
+    //show single errors
+    const errorMessages = send_email_error.sendemailError(req.body)
+
+    if (errorMessages) {
+      return res.status(400).json({ email: errorMessages.error.details[0].message })
+    }
+
+    //show multiple error
+    // if (errorMessages && errorMessages.length > 0) {
+    //   return res.status(400).json({ error: errorMessages }); 
+    // }
+
+
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
