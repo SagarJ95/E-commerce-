@@ -4,14 +4,22 @@ const passwordController = require("../controller/password_controller");
 const product = require("../controller/product");
 const authorize = require("../middleware/token_auth");
 const axios = require("axios");
-
+const { check, validationErrors } = require("express-validator");
 //login page
 router.get("/login", (req, res) => {
   res.render("login");
 });
 
+function SendMailError() {
+  return [
+    check("email")
+      .isLength({ min: 10 })
+      .withMessage("Please Enter a valid email id"),
+  ];
+}
+
 //send mail (GMAIL)
-router.get("/SendMail", controller.sendEmail);
+router.get("/SendMail", SendMailError(), controller.sendEmail);
 
 //home
 router.get("/", async (req, res) => {

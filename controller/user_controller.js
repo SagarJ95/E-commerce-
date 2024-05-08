@@ -2,6 +2,7 @@ const pool = require("../db/db");
 const jwtGenerate = require("../utilites/jwt");
 const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
+const { validationResult } = require("express-validator");
 
 module.exports.user_register = async (req, res) => {
   try {
@@ -106,6 +107,12 @@ module.exports.contact_us = async (req, res) => {
 module.exports.sendEmail = (req, res) => {
   try {
     const { email } = req.body;
+    console.log("reqqqq", req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     if (!email) {
       return res.status(201).json({ msg: "Please Enter Email" });
     } else {
@@ -132,7 +139,7 @@ module.exports.sendEmail = (req, res) => {
         }
       });
     }
-  } catch {
+  } catch (err) {
     return res.status(500).json({ error: err.message });
   }
 };
