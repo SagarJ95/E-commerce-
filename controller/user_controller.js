@@ -2,13 +2,20 @@ const pool = require("../db/db");
 const jwtGenerate = require("../utilites/jwt");
 const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
-const { validationResult } = require("express-validator");
-const send_email_error = require('../validation/send_email_error')
-
+const send_email_error = require("../validation/send_email_error");
+const UserValidation = require("../validation/user_validation");
 
 module.exports.user_register = async (req, res) => {
   try {
     let { name, email, contact, password, country, city, address } = req.body;
+
+    const errorlength = UserValidation.registerValidation(req.body);
+
+    if (errorlength) {
+      return res
+        .status(400)
+        .json({ msg: errorlength.error.details[0].message });
+    }
 
     const emailId = await pool.query(
       "select * from _customers where customer_email=$1",
@@ -44,6 +51,12 @@ module.exports.user_register = async (req, res) => {
 module.exports.user_login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    const errorList = UserValidation.loginValidation(req.body);
+
+    if (errorList) {
+      return res.status(400).json({ msg: errorList.error.details[0].message });
+    }
 
     const checkemailId = await pool.query(
       "select * from _customers where customer_email=$1",
@@ -87,6 +100,14 @@ module.exports.contact_us = async (req, res) => {
   try {
     const { first_name, last_name, message, email } = req.body;
 
+    const ContactError = UserValidation.contactValidation(req.body);
+
+    if (ContactError) {
+      return res
+        .status(400)
+        .json({ msg: ContactError.error.details[0].message });
+    }
+
     if (first_name == "" || last_name == "" || email == "") {
       return res.status(401).json({ msg: "Please fill all the fields" });
     } else {
@@ -110,25 +131,19 @@ module.exports.sendEmail = (req, res) => {
   try {
     const { email } = req.body;
 
-
     //show single errors
-    const errorMessages = send_email_error.sendemailError(req.body)
+    const errorMessages = send_email_error.sendemailError(req.body);
 
     if (errorMessages) {
-      return res.status(400).json({ email: errorMessages.error.details[0].message })
+      return res
+        .status(400)
+        .json({ email: errorMessages.error.details[0].message });
     }
 
     //show multiple error
     // if (errorMessages && errorMessages.length > 0) {
-    //   return res.status(400).json({ error: errorMessages }); 
+    //   return res.status(400).json({ error: errorMessages });
     // }
-
-
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
 
     if (!email) {
       return res.status(201).json({ msg: "Please Enter Email" });
