@@ -4,6 +4,7 @@ const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const send_email_error = require("../validation/send_email_error");
 const UserValidation = require("../validation/user_validation");
+const { validateInfo } = require("express-validator");
 
 module.exports.user_register = async (req, res) => {
   try {
