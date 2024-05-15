@@ -11,7 +11,13 @@ const passport = require("passport");
 const passport_google = require("passport-google-oauth20");
 const session = require("express-session");
 
-app.use(session());
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET,
+  })
+);
 
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));

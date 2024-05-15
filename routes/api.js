@@ -8,6 +8,7 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const passport = require("passport");
+require("../third-party/google");
 
 router.use(passport.initialize());
 router.use(passport.session());
