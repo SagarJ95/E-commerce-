@@ -6,6 +6,13 @@ const cors = require("cors");
 const webRoutes = require("./routes/web_routes");
 const apiRoutes = require("./routes/api");
 
+//google auth
+const passport = require("passport");
+const passport_google = require("passport-google-oauth20");
+const session = require("express-session");
+
+app.use(session());
+
 app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 app.use(cors());

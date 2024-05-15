@@ -84,4 +84,7 @@ router.get("/shop", async (req, res) => {
   }
 });
 
+router.get("/SuccessGoogle", controller.SuccessGoogle);
+router.get("/Failurelogin", controller.FailureGoogle);
+
 module.exports = router;

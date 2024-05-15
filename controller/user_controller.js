@@ -176,3 +176,12 @@ module.exports.sendEmail = (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
+module.exports.SuccessGoogle = (req, res) => {
+  if (!req.user) return redirect("/");
+  res.send("/success");
+};
+
+module.exports.FailureGoogle = (req, res) => {
+  res.send("/error");
+};

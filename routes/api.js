@@ -7,6 +7,7 @@ const Orders = require("../controller/order");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const passport = require("passport");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -60,5 +61,22 @@ router.post(
 
 //send mail (GMAIL)
 router.post("/SendMail", controller.sendEmail);
+
+//google authenticate
+router.get(
+  "auth/google",
+  passport.authenticate("goggle", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "auth/google/callback",
+  passport.authenticate("google", {
+    successRedirect: "/SuccessGoogle",
+    failureRedirect: "/Failurelogin",
+  }),
+  function (req, res) {
+    res.redirect("/");
+  }
+);
 
 module.exports = router;
