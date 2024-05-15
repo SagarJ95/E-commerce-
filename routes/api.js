@@ -69,7 +69,7 @@ router.post("/SendMail", controller.sendEmail);
 //google authenticate
 router.get(
   "auth/google",
-  passport.authenticate("goggle", { scope: ["profile", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 router.get(
