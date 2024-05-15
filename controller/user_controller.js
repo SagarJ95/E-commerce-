@@ -178,10 +178,10 @@ module.exports.sendEmail = (req, res) => {
 };
 
 module.exports.SuccessGoogle = (req, res) => {
-  if (!req.user) return redirect("/");
-  res.send("/success");
+  if (!req.user) res.redirect("/");
+  res.send(`Welcome ${req.user.email}`);
 };
 
 module.exports.FailureGoogle = (req, res) => {
-  res.send("/error");
+  res.send("error");
 };

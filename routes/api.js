@@ -9,6 +9,9 @@ const fs = require("fs");
 const path = require("path");
 const passport = require("passport");
 
+router.use(passport.initialize());
+router.use(passport.session());
+
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./public/uploads/");
